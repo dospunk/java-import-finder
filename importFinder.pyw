@@ -37,10 +37,12 @@ class ImportFind:
 		#print(api)
 		page = None
 		success = False
+		url = ""
 		if api == "JavaFX 8":
-			page = BeautifulSoup(requests.get("https://docs.oracle.com/javase/8/javafx/api/allclasses-noframe.html").content, "lxml")
+			url = "https://docs.oracle.com/javase/8/javafx/api/allclasses-noframe.html"
 		if api == "Java 8":
-			page = BeautifulSoup(requests.get("http://docs.oracle.com/javase/8/docs/api/allclasses-frame.html").content, "lxml")
+			url = "https://docs.oracle.com/javase/8/docs/api/allclasses-frame.html"
+		page = BeautifulSoup(requests.get(url).content, "lxml")
 		for link in page.find_all("a"):
 			if link.text == search_term:
 				self.res_var.set("import " + link["href"].replace("/", ".")[:-5] + ";")
