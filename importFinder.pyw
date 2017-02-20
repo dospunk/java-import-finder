@@ -42,7 +42,6 @@ class ImportFind:
 		self.var.set("JavaFX 8")
 		self.options = OptionMenu(master, self.var, "Java 8", "JavaFX 8")
 		
-		#self.title.grid(row=0,column=0,columnspan=5)
 		self.class_label.grid(row=1, column=0)
 		self.input.grid(row=1, column=1, columnspan=2)
 		self.dropdown_label.grid(row=2, column=0)
