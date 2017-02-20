@@ -29,7 +29,6 @@ class ImportFind:
 		master.title("Java Import Finder")
 		master.grid_columnconfigure(1, weight=1)
 		
-		#self.title = ttk.Label(master, text="Import Statement Finder for Java")
 		self.class_label = ttk.Label(master, text="Class to find: ")
 		self.dropdown_label = ttk.Label(master, text="API to search: ")
 		self.input = ttk.Entry(master)
@@ -53,9 +52,7 @@ class ImportFind:
 		
 	def find_class(self):
 		search_term = self.input.get()
-		api = self.var.get()
-		#print(search_term)
-		#print(api)
+		api = self.var.get(
 		page = None
 		success = False
 		url = ""
