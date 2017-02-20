@@ -13,6 +13,7 @@ class err:
 
 try:
 	import requests
+	from requests.exceptions import ConnectionError
 except ImportError:
 	no_error = False
 	missing_packages.append("Requests")
@@ -62,13 +63,16 @@ class ImportFind:
 			url = "https://docs.oracle.com/javase/8/javafx/api/allclasses-noframe.html"
 		if api == "Java 8":
 			url = "https://docs.oracle.com/javase/8/docs/api/allclasses-frame.html"
-		page = BeautifulSoup(requests.get(url).content, "lxml")
-		for link in page.find_all("a"):
-			if link.text.lower() == search_term.lower():
-				self.res_var.set("import " + link["href"].replace("/", ".")[:-5] + ";")
-				success = True
-		if not success:
-			self.res_var.set("Class not found.")
+		try:
+			page = BeautifulSoup(requests.get(url).content, "lxml")
+			for link in page.find_all("a"):
+				if link.text.lower() == search_term.lower():
+					self.res_var.set("import " + link["href"].replace("/", ".")[:-5] + ";")
+					success = True
+			if not success:
+				self.res_var.set("Class not found.")
+		except ConnectionError:
+			self.res_var.set("Could not connect to the internet.")
 
 def main():
 	root = Tk()
