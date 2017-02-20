@@ -40,7 +40,7 @@ class ImportFind:
 		
 		self.var = StringVar(master)
 		self.var.set("JavaFX 8")
-		self.options = OptionMenu(master, self.var, "Java 8", "JavaFX 8")
+		self.options = OptionMenu(master, self.var, "Java 8", "Java 7", "JavaFX 8")
 		
 		self.class_label.grid(row=1, column=0)
 		self.input.grid(row=1, column=1, columnspan=2)
@@ -51,7 +51,7 @@ class ImportFind:
 		
 	def find_class(self):
 		search_term = self.input.get()
-		api = self.var.get(
+		api = self.var.get()
 		page = None
 		success = False
 		url = ""
@@ -59,6 +59,8 @@ class ImportFind:
 			url = "https://docs.oracle.com/javase/8/javafx/api/allclasses-noframe.html"
 		if api == "Java 8":
 			url = "https://docs.oracle.com/javase/8/docs/api/allclasses-frame.html"
+		if api == "Java 7":
+			url = "https://docs.oracle.com/javase/7/docs/api/allclasses-noframe.html"
 		try:
 			page = BeautifulSoup(requests.get(url).content, "lxml")
 			for link in page.find_all("a"):
