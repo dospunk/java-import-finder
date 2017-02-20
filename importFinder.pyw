@@ -1,7 +1,27 @@
 from tkinter import *
 from tkinter import ttk
-import requests
-from bs4 import BeautifulSoup
+
+no_error = True
+missing_packages = []
+
+class err:
+	def __init__(self, e, master):
+		master.title("Error")
+		missing_packages_str = " and ".join(missing_packages)
+		err_message_str = missing_packages_str + " not installed, please install the missing package(s)"
+		err_message = ttk.Label(master, text=err_message_str, foreground="#f00").pack()
+
+try:
+	import requests
+except ImportError:
+	no_error = False
+	missing_packages.append("Requests")
+try:
+	from bs4 import BeautifulSoup
+except ImportError:
+	no_error = False
+	missing_packages.append("BeautifulSoup 4")
+
 
 class ImportFind:
 	def __init__(self, master):
@@ -44,7 +64,7 @@ class ImportFind:
 			url = "https://docs.oracle.com/javase/8/docs/api/allclasses-frame.html"
 		page = BeautifulSoup(requests.get(url).content, "lxml")
 		for link in page.find_all("a"):
-			if link.text == search_term:
+			if link.text.lower() == search_term.lower():
 				self.res_var.set("import " + link["href"].replace("/", ".")[:-5] + ";")
 				success = True
 		if not success:
@@ -52,7 +72,10 @@ class ImportFind:
 
 def main():
 	root = Tk()
-	app = ImportFind(root)
+	if no_error:
+		app = ImportFind(root)
+	else: 
+		app = err(missing_packages, root)
 	root.mainloop()
 
 if __name__ == "__main__": main()
