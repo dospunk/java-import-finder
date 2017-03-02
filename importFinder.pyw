@@ -29,12 +29,14 @@ class ImportFind:
 	def __init__(self, master):
 		master.title("Java Import Finder")
 		master.grid_columnconfigure(1, weight=1)
+		master.bind('<Return>', self.find_class)
 		
 		#Initialize labels, textfield and button
 		self.class_label = ttk.Label(master, text="Class to find: ")
 		self.dropdown_label = ttk.Label(master, text="API to search: ")
 		self.input = ttk.Entry(master)
-		self.button = ttk.Button(master, text="Find", command=self.find_class)
+		self.button = ttk.Button(master, text="Find")
+		self.button.bind('<Button-1>', self.find_class)
 		
 		#Initialize & set up import statement field
 		self.res_var = StringVar(master)
@@ -58,10 +60,10 @@ class ImportFind:
 		self.result.grid(row=4, column=0, columnspan=5, padx=5, pady=5)
 		self.web.grid(row=5, column=0, columnspan=5, padx=5, pady=5)
 		
-	def open_link(self, a):
+	def open_link(self, event):
 		webbrowser.open_new(self.web["text"])
 		
-	def find_class(self):
+	def find_class(self, event):
 		search_term = self.input.get()
 		api = self.var.get()
 		page = None
