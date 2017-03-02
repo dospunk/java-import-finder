@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+import webbrowser
 
 no_error = True
 missing_packages = []
@@ -29,18 +30,25 @@ class ImportFind:
 		master.title("Java Import Finder")
 		master.grid_columnconfigure(1, weight=1)
 		
+		#Initialize labels, textfield and button
 		self.class_label = ttk.Label(master, text="Class to find: ")
 		self.dropdown_label = ttk.Label(master, text="API to search: ")
 		self.input = ttk.Entry(master)
 		self.button = ttk.Button(master, text="Find", command=self.find_class)
 		
+		#Initialize & set up import statement field
 		self.res_var = StringVar(master)
 		self.res_var.set("")
 		self.result = ttk.Entry(master, textvariable=self.res_var, state="readonly", width=40)
 		
+		#Set up options menu
 		self.var = StringVar(master)
 		self.var.set("JavaFX 8")
 		self.options = OptionMenu(master, self.var, "Java 8", "Java 7", "JavaFX 8")
+		
+		#set up link
+		self.web = ttk.Label(text="", foreground="blue", cursor="hand2")
+		self.web.bind("<Button-1>", self.open_link)
 		
 		self.class_label.grid(row=1, column=0)
 		self.input.grid(row=1, column=1, columnspan=2)
@@ -48,6 +56,10 @@ class ImportFind:
 		self.options.grid(row=2, column=1)
 		self.button.grid(row=3, column=1)
 		self.result.grid(row=4, column=0, columnspan=5, padx=5, pady=5)
+		self.web.grid(row=5, column=0, columnspan=5, padx=5, pady=5)
+		
+	def open_link(self, a):
+		webbrowser.open_new(self.web["text"])
 		
 	def find_class(self):
 		search_term = self.input.get()
@@ -55,20 +67,26 @@ class ImportFind:
 		page = None
 		success = False
 		url = ""
+		link_part = ""
 		if api == "JavaFX 8":
 			url = "https://docs.oracle.com/javase/8/javafx/api/allclasses-noframe.html"
+			link_part = "https://docs.oracle.com/javase/8/javafx/api/"
 		if api == "Java 8":
 			url = "https://docs.oracle.com/javase/8/docs/api/allclasses-frame.html"
+			link_part = "https://docs.oracle.com/javase/8/docs/api/"
 		if api == "Java 7":
 			url = "https://docs.oracle.com/javase/7/docs/api/allclasses-noframe.html"
+			link_part = "https://docs.oracle.com/javase/7/docs/api/"
 		try:
 			page = BeautifulSoup(requests.get(url).content, "lxml")
 			for link in page.find_all("a"):
 				if link.text.lower() == search_term.lower():
 					self.res_var.set("import " + link["href"].replace("/", ".")[:-5] + ";")
+					self.web["text"] = link_part + link["href"]
 					success = True
 			if not success:
 				self.res_var.set("Class not found.")
+				self.web["text"] = ""
 		except ConnectionError:
 			self.res_var.set("Could not connect to the internet.")
 
