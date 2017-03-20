@@ -46,7 +46,7 @@ class ImportFind:
 		#Set up options menu
 		self.var = StringVar(master)
 		self.var.set("JavaFX 8")
-		self.options = OptionMenu(master, self.var, "Java 8", "Java 7", "JavaFX 8")
+		self.options = OptionMenu(master, self.var, "Java 8", "Java 7", "JavaFX 8", "LWJGL")
 		
 		#set up link
 		self.web = ttk.Label(text="", foreground="blue", cursor="hand2")
@@ -79,6 +79,9 @@ class ImportFind:
 		if api == "Java 7":
 			url = "https://docs.oracle.com/javase/7/docs/api/allclasses-noframe.html"
 			link_part = "https://docs.oracle.com/javase/7/docs/api/"
+		if api == "LWJGL":
+			url = "https://javadoc.lwjgl.org/allclasses-frame.html"
+			link_part = "https://javadoc.lwjgl.org/"
 		try:
 			page = BeautifulSoup(requests.get(url).content, "lxml")
 			for link in page.find_all("a"):
