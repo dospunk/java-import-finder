@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from tkinter import *
-from tkinter import ttk
 import webbrowser
 
 no_error = True
@@ -25,7 +23,40 @@ try:
 except ImportError:
 	no_error = False
 	missing_packages.append("BeautifulSoup 4")
+try:
+	from tkinter import *
+	from tkinter import ttk
+except ImportError: 
+	no_error = False
+	missing_packages.append("TkInter")
 
+class APILinks:
+	def __init__(self, url, link_part):
+		self.url = url
+		self.link_part = link_part
+
+api_dict = {
+	"JavaFX 8": APILinks(
+		"https://docs.oracle.com/javase/8/javafx/api/allclasses-noframe.html",
+		"https://docs.oracle.com/javase/8/javafx/api/"
+	),
+	"Java 8": APILinks(
+		"https://docs.oracle.com/javase/8/docs/api/allclasses-frame.html",
+		"https://docs.oracle.com/javase/8/docs/api/"
+	),
+	"Java 7": APILinks(
+		"https://docs.oracle.com/javase/7/docs/api/allclasses-noframe.html",
+		"https://docs.oracle.com/javase/7/docs/api/"
+	),
+	"LWJGL": APILinks(
+		"https://javadoc.lwjgl.org/allclasses-frame.html",
+		"https://javadoc.lwjgl.org/"
+	),
+	"JUnit": APILinks(
+		"http://junit.org/junit4/javadoc/latest/allclasses-frame.html",
+		"http://junit.org/junit4/javadoc/latest/"
+	)
+}
 
 class ImportFind:
 	def __init__(self, master):
@@ -48,7 +79,7 @@ class ImportFind:
 		#Set up options menu
 		self.var = StringVar(master)
 		self.var.set("JavaFX 8")
-		self.options = OptionMenu(master, self.var, "Java 8", "Java 7", "JavaFX 8", "JUnit", "LWJGL")
+		self.options = OptionMenu(master, self.var, *api_dict.keys())
 		
 		#set up link
 		self.web = ttk.Label(text="", foreground="blue", cursor="hand2")
@@ -70,23 +101,8 @@ class ImportFind:
 		api = self.var.get()
 		page = None
 		success = False
-		url = ""
-		link_part = ""
-		if api == "JavaFX 8":
-			url = "https://docs.oracle.com/javase/8/javafx/api/allclasses-noframe.html"
-			link_part = "https://docs.oracle.com/javase/8/javafx/api/"
-		if api == "Java 8":
-			url = "https://docs.oracle.com/javase/8/docs/api/allclasses-frame.html"
-			link_part = "https://docs.oracle.com/javase/8/docs/api/"
-		if api == "Java 7":
-			url = "https://docs.oracle.com/javase/7/docs/api/allclasses-noframe.html"
-			link_part = "https://docs.oracle.com/javase/7/docs/api/"
-		if api == "LWJGL":
-			url = "https://javadoc.lwjgl.org/allclasses-frame.html"
-			link_part = "https://javadoc.lwjgl.org/"
-		if api == "JUnit":
-			url = "http://junit.org/junit4/javadoc/latest/allclasses-frame.html"
-			link_part = "http://junit.org/junit4/javadoc/latest/"
+		url = api_dict[api].url
+		link_part = api_dict[api].link_part
 		try:
 			page = BeautifulSoup(requests.get(url).content, "lxml")
 			for link in page.find_all("a"):
